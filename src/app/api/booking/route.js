@@ -1,55 +1,46 @@
-// src/app/api/bookings/route.js
-import { PrismaClient } from "@prisma/client";
-import { verifyToken } from "../../../utils/auth";
+// src/app/api/booking/route.js
+import { NextResponse } from 'next/server';
+import prisma from '../../../lib/prisma'; // SOLUCIÓN 1: Importamos el cliente de Prisma compartido
+import { verifyToken } from '../../../utils/auth';
 
-const prisma = new PrismaClient();
-
-export async function POST(req) {
+export async function POST(request) {
   try {
-    const cookies = req.headers.get("cookie");
-    const token = cookies
-      ?.split("; ")
-      ?.find((row) => row.startsWith("token="))
-      ?.split("=")[1];
+    const token = request.headers.get("authorization")?.split(" ")[1]; // Estándar: "Bearer TOKEN"
 
-    if (!token) {
-      return new Response(JSON.stringify({ error: "No autorizado" }), { status: 401 });
+    // SOLUCIÓN 2: Usamos 'await' y manejamos el objeto de respuesta de verifyToken
+    const tokenVerification = await verifyToken(token);
+    if (tokenVerification.error) {
+      return NextResponse.json({ error: tokenVerification.message }, { status: tokenVerification.status });
     }
+    const { decodedUser } = tokenVerification;
 
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return new Response(JSON.stringify({ error: "Token inválido" }), { status: 401 });
-    }
-
-    const { professionalId, date, timeSlot } = await req.json();
+    const { professionalId, date, timeSlot } = await request.json();
     if (!professionalId || !date || !timeSlot) {
-      return new Response(JSON.stringify({ error: "Faltan datos" }), { status: 400 });
+      return NextResponse.json({ error: "Faltan datos para la reserva" }, { status: 400 });
     }
 
-    const professional = await prisma.user.findUnique({
-      where: { id: parseInt(professionalId) },
-      select: { membershipStatus: true },
+    // SOLUCIÓN 3 Y 4: Apuntamos al modelo correcto (ProfessionalProfile) y usamos el ID como String
+    const professional = await prisma.professionalProfile.findUnique({
+      where: { id: professionalId },
     });
 
-    if (!professional || professional.membershipStatus !== "active") {
-      return new Response(JSON.stringify({ error: "Profesional no disponible" }), { status: 400 });
+    if (!professional) {
+      return NextResponse.json({ error: "Profesional no disponible" }, { status: 400 });
     }
 
     const booking = await prisma.booking.create({
       data: {
-        userId: decoded.userId,
-        professionalId: parseInt(professionalId),
+        clientId: decodedUser.userId, // El ID del cliente viene del token
+        professionalId: professionalId, // El ID del profesional viene del request
         date: new Date(date),
         time: timeSlot,
-        status: "pending",
+        status: "PENDING",
       },
     });
 
-    return new Response(JSON.stringify({ booking }), { status: 201 });
+    return NextResponse.json({ booking }, { status: 201 });
   } catch (error) {
     console.error("Error al crear reserva:", error);
-    return new Response(JSON.stringify({ error: "Error interno" }), { status: 500 });
-  } finally {
-    await prisma.$disconnect();
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 });
   }
 }
