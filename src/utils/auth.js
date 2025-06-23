@@ -2,53 +2,35 @@
 
 import jwt from 'jsonwebtoken';
 
-// MEJORA: Añadimos la función 'generateToken' que faltaba.
-// Esta función crea un token de sesión cuando un usuario inicia sesión.
+// Función para crear un token de sesión.
 export function generateToken(user) {
-  // Creamos el "payload" con la información que queremos guardar en el token.
-  // Es importante NO guardar información sensible como la contraseña aquí.
   const payload = {
     userId: user.id,
     email: user.email,
-    role: user.role, // Guardamos el rol para futuras validaciones
+    role: user.role,
   };
 
-  // Firmamos el token usando nuestro secreto y le damos una duración de 1 día.
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: '1d',
+    expiresIn: '1d', // El token expira en 1 día
   });
 
   return token;
 }
 
-
-// Se mantiene tu función original, pero ahora con la lógica de verificación real.
-export function verifyToken(token, requireAdmin = false) {
+// Función para verificar un token. Es una función 'async' por si en el futuro
+// la verificación requiere una consulta a la base de datos.
+export async function verifyToken(token) {
   if (!token) {
-    return { 
-      message: 'Authentication token required',
-      status: 401
-    };
+    return { error: { message: 'Authentication token required', status: 401 } };
   }
 
   try {
-    // MEJORA: Implementamos la lógica real de verificación JWT.
+    // Verificamos el token con el secreto. Si es inválido o expiró, lanzará un error.
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Verificamos si se requieren privilegios de administrador.
-    if (requireAdmin && decoded.role !== 'ADMIN') {
-      return {
-        message: 'Admin privileges required',
-        status: 403
-      };
-    }
-
-    // Si todo está bien, no devolvemos ningún error y adjuntamos el usuario decodificado.
-    return { error: null, decodedUser: decoded };
+    // Si todo está bien, devolvemos el usuario decodificado.
+    return { decodedUser: decoded };
   } catch (error) {
-    return {
-      message: 'Invalid or expired token',
-      status: 401
-    };
+    return { error: { message: 'Invalid or expired token', status: 401 } };
   }
 }

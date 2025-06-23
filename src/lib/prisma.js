@@ -1,18 +1,20 @@
-// lib/prisma.js
+// src/lib/prisma.js
+
 import { PrismaClient } from '@prisma/client';
 
-// Usar globalThis para compatibilidad en diferentes entornos (Node.js, Next.js, etc.)
-const globalThisForPrisma = globalThis;
+// Declaramos una variable global para guardar el cliente de Prisma.
+let prisma;
 
-// Inicializar PrismaClient, reutilizando la instancia si ya existe
-const prisma = globalThisForPrisma.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== 'production') {
-  // Almacenar la instancia en globalThis solo en desarrollo para evitar múltiples instancias
-  globalThisForPrisma.prisma = prisma;
-} else if (!globalThisForPrisma.prisma) {
-  // En producción, inicializar si no existe para evitar duplicados
-  globalThisForPrisma.prisma = prisma;
+if (process.env.NODE_ENV === 'production') {
+  // En producción, creamos una única instancia.
+  prisma = new PrismaClient();
+} else {
+  // En desarrollo, evitamos crear múltiples instancias debido al "hot-reloading" de Next.js.
+  // Reutilizamos la instancia si ya existe en el objeto global.
+  if (!global.prisma) {
+    global.prisma = new PrismaClient();
+  }
+  prisma = global.prisma;
 }
 
 export default prisma;
