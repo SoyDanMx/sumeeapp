@@ -1,0 +1,106 @@
+/* src/styles/globals.css */
+
+
+
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+
+
+/* --- CONFIGURACIÓN BASE --- */
+
+@layer base {
+
+body {
+
+background-color: #f9fafb; /* Equivalent to bg-gray-50 */
+color: #1f2937; /* Equivalent to text-gray-800 */
+-webkit-font-smoothing: antialiased; /* Equivalent to antialiased */
+-moz-osx-font-smoothing: grayscale;
+
+/* MEJORA: Aplicamos la fuente 'Inter' que configuramos en layout.js.
+
+Esto asegura que toda la app use la fuente optimizada y elimina la necesidad
+
+de 'font-family: Arial'. 'font-sans' está configurado en tailwind.config.js
+
+para usar esta variable.
+
+*/
+
+font-family: var(--font-inter), sans-serif;
+
+}
+
+}
+
+
+
+/* MEJORA: Se elimina la clase .container personalizada.
+
+Ahora usamos la clase 'container' de Tailwind que configuramos en tailwind.config.js,
+
+lo que nos da consistencia y responsividad automática.
+
+*/
+
+
+
+/* --- ESTILOS DE LIBRERÍAS EXTERNAS --- */
+
+/* Estilos para el mapa de Leaflet. Es correcto mantenerlos aquí. */
+
+.leaflet-container {
+
+height: 500px;
+
+width: 100%;
+
+margin: 0 auto;
+
+z-index: 10; /* Aseguramos que el mapa no se oculte */
+
+}
+
+
+
+
+
+/* --- ANIMACIONES GLOBALES --- */
+
+/* MEJORA Y SOLUCIÓN: Se añade la animación para el menú del header.
+
+Esto hará que el menú aparezca suavemente.
+
+*/
+
+@keyframes fadeIn {
+
+from {
+
+opacity: 0;
+
+transform: translateY(-10px);
+
+}
+
+to {
+
+opacity: 1;
+
+transform: translateY(0);
+
+}
+
+}
+
+
+
+.animate-fadeIn {
+
+animation: fadeIn 0.2s ease-out forwards;
+
+}

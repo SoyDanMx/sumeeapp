@@ -1,0 +1,81 @@
+// schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+// Modelo User unificado
+model User {
+  id                String    @id @default(cuid())
+  name              String
+  email             String    @unique
+  password          String
+  image             String?
+  role              Role      @default(CLIENT)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  reviewsWritten    Review[]            @relation("ReviewsByUser")
+  professionalProfile ProfessionalProfile?
+}
+
+// Perfil específico para profesionales
+model ProfessionalProfile {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @unique
+  phone       String?
+  bio         String?  @db.Text
+  workPhotos  String[]
+  workedAreas String[]
+  reviewsReceived Review[]   @relation("ReviewsForProfessional")
+  services        Service[]
+}
+
+// MEJORA: Añadimos un modelo para las categorías de servicios
+model ServiceCategory {
+  id          String    @id @default(cuid())
+  name        String    @unique // ej: "Servicios del Hogar"
+  slug        String    @unique // ej: "servicios-del-hogar"
+  icon        String?   // ej: "🏠"
+  
+  // Relación: Una categoría tiene muchos servicios
+  services    Service[]
+}
+
+// Modelo de Servicio ahora relacionado a una Categoría
+model Service {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  icon        String?
+  
+  // Relación: Un servicio pertenece a una categoría
+  category    ServiceCategory @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  
+  professionals ProfessionalProfile[]
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int
+  comment     String?  @db.Text
+  createdAt   DateTime @default(now())
+  author      User     @relation("ReviewsByUser", fields: [authorId], references: [id])
+  authorId    String
+  professional    ProfessionalProfile @relation("ReviewsForProfessional", fields: [professionalId], references: [id])
+  professionalId  String
+}
+
+enum Role {
+  CLIENT
+  PROFESSIONAL
+  ADMIN
+}

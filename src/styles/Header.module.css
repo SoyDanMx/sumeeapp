@@ -1,0 +1,247 @@
+/* src/styles/Header.module.css */
+
+/* Estilos base del dropdown */
+.servicesDropdown {
+    position: relative;
+    display: inline-block;
+    z-index: 1000;
+  }
+  
+  .servicesButton {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.75rem 1.25rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .servicesButton:hover {
+    color: var(--primary-color);
+  }
+  
+  .arrow {
+    transition: transform 0.3s ease;
+    font-size: 0.7rem;
+  }
+  
+  .arrow.open {
+    transform: rotate(180deg);
+  }
+  
+  /* Menú desplegable */
+  .dropdownMenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 800px;
+    max-width: 90vw;
+    z-index: 1000;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 0.3s ease forwards;
+  }
+  
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Barra de búsqueda */
+  .searchContainer {
+    width: 100%;
+  }
+  
+  .searchInput {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+  
+  .searchInput:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+  }
+  
+  /* Pestañas de categorías */
+  .categoryTabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  
+  .categoryTab {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+  }
+  
+  .categoryTab:hover {
+    background: #f7fafc;
+  }
+  
+  .categoryTab.active {
+    background: var(--primary-color);
+    color: white;
+  }
+  
+  /* Grid de servicios */
+  .servicesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+  
+  .serviceCard {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid #edf2f7;
+  }
+  
+  .serviceCard:hover {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .serviceIcon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  
+  .serviceInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .serviceInfo h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .serviceDescription {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #4a5568;
+  }
+  
+  .serviceMeta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .priceIndicator {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+  
+  .responseTime {
+    color: #718096;
+  }
+  
+  /* Sin resultados */
+  .noResults {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    color: #718096;
+  }
+  
+  /* Sección de acciones */
+  .actionsSection {
+    display: flex;
+    gap: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #edf2f7;
+  }
+  
+  .actionButton {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-align: center;
+    flex: 1;
+  }
+  
+  .actionButton:hover {
+    background: var(--primary-dark);
+  }
+  
+  .actionButtonSecondary {
+    background: white;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-align: center;
+    flex: 1;
+  }
+  
+  .actionButtonSecondary:hover {
+    background: #f0f7ff;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dropdownMenu {
+      width: 100vw;
+      max-width: 100%;
+      left: -2rem;
+      border-radius: 0;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .servicesGrid {
+      grid-template-columns: 1fr;
+    }
+  }

@@ -1,0 +1,117 @@
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #2563eb;
+  --secondary: #888888;
+  --header-height: 3rem; /* Reducido de 4rem a 3rem (48px) */
+}
+
+body {
+  padding-top: var(--header-height); /* Se actualiza automáticamente */
+}
+
+.header {
+  height: var(--header-height); /* Altura consistente */
+  @apply fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm transition-all duration-300;
+}
+
+/* Elimina el padding-top redundante del body */
+/* body {
+  @apply pt-20; 
+} */
+
+/* Elimina los estilos del nav ya que ahora usas Header */
+/* nav {
+  @apply fixed top-0 left-0 right-0 z-50 bg-[var(--primary)] text-white p-4 shadow-md;
+} */
+
+.search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height); /* Evita que el contenido quede detrás del Header */
+}
+
+/* Utilidades personalizadas para el banner y formulario */
+@layer components {
+  .banner-overlay {
+    @apply bg-black p-8 rounded-lg;
+  }
+
+  .banner-title {
+    @apply text-4xl md:text-5xl font-bold text-white mb-4;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .banner-subtitle {
+    @apply text-lg md:text-xl text-white mb-6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .form-section {
+    @apply py-16 px-4 max-w-lg mx-auto text-center bg-gray-50;
+  }
+
+  .form-group {
+    @apply flex flex-col text-left;
+  }
+
+  .form-label {
+    @apply text-sm mb-2 text-gray-600;
+  }
+
+  .form-input {
+    @apply p-3 text-base border border-gray-300 rounded-md outline-none transition-colors;
+  }
+
+  .form-input:focus {
+    @apply border-[var(--primary)] ring-1 ring-[var(--primary)];
+  }
+
+  .submit-button {
+    @apply bg-[var(--primary)] text-white p-4 text-lg rounded-md cursor-pointer transition-colors;
+  }
+
+  .submit-button:hover {
+    @apply bg-blue-700;
+  }
+
+  .login-link {
+    @apply mt-6 text-gray-600;
+  }
+
+  .login-link a {
+    @apply text-[var(--primary)] no-underline;
+  }
+
+  .login-link a:hover {
+    @apply underline;
+  }
+
+  /* Nuevos estilos para el Header */
+  .header {
+    height: var(--header-height);
+    @apply fixed top-0 left-0 right-0 z-50 bg-white shadow-sm transition-all duration-300;
+  }
+
+  .header-scrolled {
+    @apply shadow-md;
+  }
+
+  /* Ajuste para el contenido principal */
+  .main-content {
+    min-height: calc(100vh - var(--header-height));
+    @apply pt-0; /* El padding ya lo maneja el body */
+  }
+}
