@@ -52,5 +52,6 @@ function ConfirmationContent() {
       ) : (
         <div>Pago pendiente</div>
       )}
-    </div>
-  );
+      </div>
+    );
+  }
